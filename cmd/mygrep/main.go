@@ -41,12 +41,22 @@ func matchLine(line []byte, pattern string) (bool, error) {
 	switch {
 	case pattern == `\d`:
 		// match digits
-		for _, b := range string(line) {
-			if unicode.IsDigit(b) {
+		for _, character := range string(line) {
+			if unicode.IsDigit(character) {
 				return true, nil
 			}
 		}
 		return false, nil
+
+	// \w matches any alphanumeric character (a-z, A-Z, 0-9, _).
+	case pattern == `\w`:
+		for _, character := range string(line) {
+			if unicode.IsDigit(character) || unicode.IsLetter(character) || character == '_' {
+				return true, nil
+			}
+		}
+		return false, nil
+
 	// to ensure only exactly 1 character is provided in the pattern
 	case utf8.RuneCountInString(pattern) == 1:
 		return bytes.ContainsAny(line, pattern), nil
