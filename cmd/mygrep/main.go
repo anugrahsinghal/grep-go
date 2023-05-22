@@ -1,12 +1,10 @@
 package main
 
 import (
-	// Uncomment this to pass the first stage
-	"bytes"
 	"fmt"
 	"io"
 	"os"
-	"unicode/utf8"
+	"regexp"
 )
 
 // Usage: echo <input_text> | your_grep.sh -E <pattern>
@@ -38,17 +36,22 @@ func main() {
 }
 
 func matchLine(line []byte, pattern string) (bool, error) {
-	if utf8.RuneCountInString(pattern) != 1 {
-		return false, fmt.Errorf("unsupported pattern: %q", pattern)
-	}
+	// to ensure only exactly 1 character is provided in the pattern
+	//if utf8.RuneCountInString(pattern) != 1 {
+	//	return false, fmt.Errorf("unsupported pattern: %q", pattern)
+	//}
 
 	var ok bool
+
+	println(pattern)
+	compiledRegex := regexp.MustCompile(pattern)
+	ok = compiledRegex.Match(line)
 
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Println("Logs from your program will appear here!")
 
 	// Uncomment this to pass the first stage
-	ok = bytes.ContainsAny(line, pattern)
+	//ok = bytes.ContainsAny(line, pattern)
 
 	return ok, nil
 }
